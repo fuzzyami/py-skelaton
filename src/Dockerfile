@@ -1,20 +1,24 @@
-# dockerfile for building the api-server
+# Use a slim Python image for a smaller footprint
+FROM python:3.11-slim-buster
 
-FROM python:3.11-buster as builder
+RUN pip install poetry
 
-RUN pip install poetry==1.4.2
+# Set working directory
+WORKDIR /app
 
-ENV POETRY_NO_INTERACTION=1 \
-    POETRY_VIRTUALENVS_IN_PROJECT=1 \
-    POETRY_VIRTUALENVS_CREATE=1 \
-    POETRY_CACHE_DIR=/tmp/poetry_cache
+# Copy poetry.lock and pyproject.toml to ensure consistent dependencies
+COPY poetry.lock pyproject.toml ./
 
-WORKDIR /src
+# Install dependencies using poetry
+RUN poetry install --no-interaction --no-ansi
 
-COPY pyproject.toml ./
-# run poetry install
-RUN poetry install
-
+# Copy the source code
 COPY . .
 
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+# Expose the port where your Flask app typically runs (adjust if needed)
+EXPOSE 8082
+
+ENV FLASK_APP=main.py
+
+# Set the main entrypoint to run the Flask app
+CMD [ "poetry", "run", "flask", "run", "--host=0.0.0.0", "--port=8082" ]

@@ -1,54 +1,46 @@
-version: '3'
+version: "3.8"
+
 services:
-    spi-server:
-      container_name: api-server
-      restart: always
-      build:
-        context: api-server
-        dockerfile: Dockerfile
-      ports:
-        - "8080:8080"
-      depends_on:
-        - rabbitmq
-        - my-redis
-      networks:
-        - test-network
+  my-api-serve:
+    build: .
+    ports:
+      - "8082:8082"
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      REDIS_HOST: redis
+      POSTGRES_HOST: postgresql
+      MONGO_HOST: mongodb
+    depends_on:
+      - rabbitmq
+      - redis
+      - postgresql
+      - mongodb
 
-    my-rabbitmq:
-      container_name: my-rabbitmq
-      image: rabbitmq:management
-      ports:
-        - "5672:5672"
-        - "15672:15672"
-      restart: always
-      networks:
-        - test-network
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "15672:15672"
 
-    my-redis:
-      container_name: my-redis
-      image: redis:5
-      ports:
-        - "6379:6379"
-      restart: always
-      networks:
-        - test-network
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
 
-    my-mongodb:
-      container_name: my-mongodb
-      image: mongo:3.6
-      restart: always
-      environment:
-        MONGO_DATA_DIR: /data/db
-        MONGO_LOG_DIR: /dev/null
-      volumes:
-        - mongo-data:/data/db
-      ports:
-        - "27017:27017"
-      command: mongod --smallfiles --logpath=/dev/null # --quiet
-      networks:
-        - test-network
+  postgresql:
+    image: postgres:alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
 
-    volumes:
-      mongo-data:
-    networks:
-      test-network:
+  mongodb:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+
+volumes:
+  postgres-data:
+    driver: local
