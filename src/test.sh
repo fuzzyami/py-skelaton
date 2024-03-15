@@ -1,0 +1,1 @@
+curl -XGET 'localhost:8082/hello' --verbose
