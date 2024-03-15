@@ -8,7 +8,7 @@ import redis
 # create flask app
 app = flask.Flask(__name__)
 
-@app.route("/hello_world")
+@app.route("/hello-world")
 def hello_world():
     return "<p>Hello, World!</p>"
 
@@ -16,6 +16,7 @@ def main():
     app.run(host='localhost', port=8082)
 
 if __name__ == '__main__':
+    print('running flask server...')
     main()
 
 
