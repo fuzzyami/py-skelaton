@@ -1,0 +1,54 @@
+version: '3'
+services:
+    spi-server:
+      container_name: api-server
+      restart: always
+      build:
+        context: api-server
+        dockerfile: Dockerfile
+      ports:
+        - "8080:8080"
+      depends_on:
+        - rabbitmq
+        - my-redis
+      networks:
+        - test-network
+
+    my-rabbitmq:
+      container_name: my-rabbitmq
+      image: rabbitmq:management
+      ports:
+        - "5672:5672"
+        - "15672:15672"
+      restart: always
+      networks:
+        - test-network
+
+    my-redis:
+      container_name: my-redis
+      image: redis:5
+      ports:
+        - "6379:6379"
+      restart: always
+      networks:
+        - test-network
+
+    my-mongodb:
+      container_name: my-mongodb
+      image: mongo:3.6
+      restart: always
+      environment:
+        MONGO_DATA_DIR: /data/db
+        MONGO_LOG_DIR: /dev/null
+      volumes:
+        - mongo-data:/data/db
+      ports:
+        - "27017:27017"
+      command: mongod --smallfiles --logpath=/dev/null # --quiet
+      networks:
+        - test-network
+
+    volumes:
+      mongo-data:
+    networks:
+      test-network:
