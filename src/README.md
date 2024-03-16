@@ -1,3 +1,8 @@
+# Py-Skeleton
+A simple python skeleton for a web app using flask, postgres, rabbitmq, and mongo.
+also includes a docker-compose file to start everything up.
+
+
 # a buncha shortcuts:
 
 ## to start everything:
