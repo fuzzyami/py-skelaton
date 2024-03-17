@@ -1,0 +1,17 @@
+{
+"deployment": {
+"name": "ingester",
+"namespace": "default"
+},
+"minReplicas": 1,
+"maxReplicas": 50,
+"stabilizationPeriodSeconds": 5,
+"scaleUp": {
+"cpuPercentage": 80,
+"periodSeconds": 10
+},
+"scaleDown": {
+"cpuPercentage": 30,
+"periodSeconds": 20
+}
+}

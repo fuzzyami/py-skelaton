@@ -1,0 +1,1 @@
+curl -XPOST localhost:8082/policies -d @policy.json -H "Content-Type: application/json"
